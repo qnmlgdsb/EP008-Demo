@@ -29,7 +29,7 @@ def upload_file(port, file_path):
         file_size = len(file_content)
         print('Creating audio file...')
         result = at(port, 'AT+FSCREATE={0}'.format(file_name))
-        if (not result) or (result[0] != 'OK'):
+        if (not result) or (result is None):
             print('RESULT=', result)
             raise IOError('Failed to create file')
         print('Writing audio file [filename={0}, size={1}] ...'.format(file_name, file_size))
@@ -53,17 +53,18 @@ with serial.Serial(COM_PORT, baudrate=115200, timeout=5) as port:
         print(port.name + ' is open...!!!')
 
     result = at(port, 'ATE0') # 关闭回显，同时测试连接情况
-    if result[0] != 'OK':
+    #print(result)
+    if result is None:
         print('Failed to execute ATE0, check connection please.')
     print('>>>', result)
 
-    upload_file(port, './to_play.amr')
+    upload_file(port, '/root/EP008-Demo-master/to_play.amr')
     print('-----------------------------')
     print(at(port, 'AT+FSLS=C:\\')) # 检查是否上传成功
 
     print(at(port, 'AT+COLP=1'))
 
-    print(at(port, 'ATD139XXXXXXXX;'))  # 139XXXXXXX 改成要拨打的手机号
+    print(at(port, 'ATD139xxxxxxxx;'))  # 139XXXXXXX 改成要拨打的手机号
 
     # 等待对方摘机
     while True:
